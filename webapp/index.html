@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ESM Launchpad</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+        id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-libs="sap.m,sap.f,sap.ui.layout"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-onInit="module:customInit"
+        data-sap-ui-resourceroots='{"customInit": "./"}'>
+    </script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #appContent {
+            height: calc(100% - 3rem);
+        }
+        .tileGrid {
+            box-sizing: border-box;
+            padding: 1rem;
+        }
+        .appIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="sapUiBody" id="content">
+    <div id="shellArea"></div>
+    <div id="appContent"></div>
+
+    <script>
+        sap.ui.define("customInit", [
+            "sap/f/ShellBar",
+            "sap/f/GridContainer",
+            "sap/f/GridContainerItemLayoutData",
+            "sap/m/GenericTile",
+            "sap/m/TileContent",
+            "sap/m/NumericContent",
+            "sap/ui/core/HTML",
+            "sap/ui/core/Icon"
+        ], function (ShellBar, GridContainer, GridContainerItemLayoutData, GenericTile, TileContent, NumericContent, HTML, Icon) {
+            "use strict";
+
+            // Define your tiles here: title, subtitle, icon and the link to open in the iframe
+            var aTiles = [
+                {
+                    title: "SAP ESM",
+                    subtitle: "Self Service",
+                    icon: "sap-icon://notes",
+                    url: "https://<YOUR_TENANT>.de1.test.crm.cloud.sap/go/list/self?ui-header=false&ui-tabs=false"
+                },
+                {
+                    title: "SAP ESM",
+                    subtitle: "Self Service - German Language",
+                    icon: "sap-icon://journey-arrive",
+                    url: "https://<YOUR_TENANT>.de1.test.crm.cloud.sap/go/list/self?ui-header=false&ui-tabs=false&ui-language=de"
+                }
+            ];
+
+            var oGridContainer = new GridContainer({
+                layout: { columnSize: "11rem", rowSize: "11rem", gap: "1rem" }
+            }).addStyleClass("tileGrid");
+
+            aTiles.forEach(function (oTileConfig) {
+                var oTile = new GenericTile({
+                    header: oTileConfig.title,
+                    subheader: oTileConfig.subtitle,
+                    press: function () {
+                        showApp(oTileConfig.url, oTileConfig.title);
+                    },
+                    tileContent: new TileContent({
+                        content: new Icon({
+                            src: oTileConfig.icon,
+                            size: "2.5rem"
+                        })
+                    })
+                });
+                oTile.setLayoutData(new GridContainerItemLayoutData({ columns: 1, rows: 1 }));
+                oGridContainer.addItem(oTile);
+            });
+
+            var oIframe = new HTML({
+                content: "<iframe id='appIframe' class='appIframe'></iframe>"
+            });
+
+            // Apply any pending URL as soon as the iframe is (re)rendered in the DOM
+            oIframe.addEventDelegate({
+                onAfterRendering: function () {
+                    var oIframeEl = document.getElementById("appIframe");
+                    if (oIframeEl && oIframeEl.getAttribute("src") !== oIframe.pendingUrl && oIframe.pendingUrl) {
+                        oIframeEl.src = oIframe.pendingUrl;
+                    }
+                }
+            });
+
+            var oAppContainer = new sap.m.NavContainer({
+                pages: [
+                    new sap.m.Page("homePage", {
+                        showHeader: false,
+                        content: [oGridContainer]
+                    }),
+                    new sap.m.Page("appPage", {
+                        showHeader: false,
+                        content: [oIframe]
+                    })
+                ]
+            });
+
+            function showApp(sUrl, sTitle) {
+                oIframe.pendingUrl = sUrl;
+                var oIframeEl = document.getElementById("appIframe");
+                if (oIframeEl) {
+                    oIframeEl.src = sUrl;
+                }
+                oAppContainer.to("appPage");
+                oShellBar.setSecondTitle(sTitle);
+                oShellBar.setShowNavButton(true);
+            }
+
+            function showHome() {
+                oAppContainer.backToPage("homePage");
+                oShellBar.setSecondTitle("");
+                oShellBar.setShowNavButton(false);
+            }
+
+            var oShellBar = new ShellBar({
+                title: "Self Service Launchpad",
+                showNavButton: false,
+                homeIconPressed: showHome,
+                navButtonPressed: showHome
+            });
+
+            oShellBar.placeAt("shellArea");
+            oAppContainer.placeAt("appContent");
+        });
+    </script>
+</body>
+</html>

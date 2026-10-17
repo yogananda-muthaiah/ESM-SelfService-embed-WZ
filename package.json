@@ -1,0 +1,14 @@
+{
+    "name": "esm-launchpad",
+    "version": "1.0.0",
+    "description": "ESM Launchpad for SAP Workzone Standard Edition",
+    "dependencies": {
+        "mbt": "^1.0.16"
+    },    
+    "scripts": {
+        "start": "ui5 serve",
+        "build": "mbt build",
+        "lint": "ui5lint",
+        "deploy": "npm run build && cf html5-push -n rwe-launchpad dist/"
+    }
+}

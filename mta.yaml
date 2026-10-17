@@ -1,0 +1,88 @@
+_schema-version: "3.2"
+ID: esm-launchpad
+version: 1.0.0
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+
+modules:
+  - name: esm-launchpad-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: uaa_esm-launchpad
+        parameters:
+          service-key:
+            name: uaa_esm-launchpad-key
+      - name: esm-launchpad_html_repo_host
+        parameters:
+          service-key:
+            name: esm-launchpad_html_repo_host-key
+      - name: esm-launchpad-destination-service
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        subaccount:
+          destinations:
+            - Name: esm_launchpad_html_repo_host
+              ServiceInstanceName: esm-launchpad-html5-app-host-service
+              ServiceKeyName: esm-launchpad_html_repo_host-key
+              sap.cloud.service: my.service
+            - Authentication: OAuth2UserTokenExchange
+              Name: esm_launchpad_uaa
+              ServiceInstanceName: esm-launchpad-xsuaa-service
+              ServiceKeyName: uaa_esm-launchpad-key
+              sap.cloud.service: my.service
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+
+  - name: esm-launchpad_ui_deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: esm-launchpad_html_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - webapp-content.zip
+          name: esm-launchpad
+          target-path: resources/
+
+  - name: esm-launchpad
+    type: html5
+    path: webapp
+    build-parameters:
+      builder: custom
+      commands:
+        - npm run build
+      supported-platforms: []
+
+resources:
+  - name: esm-launchpad-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: esm-launchpad-destination-service
+      service-plan: lite
+
+  - name: esm-launchpad_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: esm-launchpad-html5-app-host-service
+      service-plan: app-host
+
+  - name: uaa_esm-launchpad
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: esm-launchpad-xsuaa-service
+      service-plan: application

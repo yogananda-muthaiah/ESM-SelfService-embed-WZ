@@ -1,0 +1,38 @@
+{
+    "_version": "2.0.0",
+    "sap.app": {
+        "id": "esm.launchpad",
+        "type": "application",
+        "title": "ESM Launchpad",
+        "description": "ESM Custom Launchpad for SAP Work Zone",
+        "applicationVersion": {
+            "version": "1.0.0"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "minUI5Version": "1.136.0",
+            "libs": {
+                "sap.m": {},
+                "sap.f": {},
+                "sap.ui.layout": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "my.service"
+    }
+}

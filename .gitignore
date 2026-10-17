@@ -1,0 +1,80 @@
+# ==========================================
+# Node.js
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.npm/
+.pnpm-store/
+
+# ==========================================
+# Environment variables and secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.credentials
+
+# ==========================================
+# SAPUI5 / UI5 Tooling
+# ==========================================
+webapp/test/
+webapp/localService/testdata/
+ui5-deploy.yaml
+dist/
+coverage/
+
+# UI5 tooling cache
+.ui5/
+.nyc_output/
+
+# ==========================================
+# SAP Fiori tools / BAS / VS Code
+# ==========================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.code-workspace
+
+# ==========================================
+# SAP Business Application Studio
+# ==========================================
+.theia/
+*.log
+
+# ==========================================
+# Build artifacts
+# ==========================================
+build/
+out/
+tmp/
+temp/
+
+# ==========================================
+# OS-generated files
+# ==========================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Local configuration
+# ==========================================
+default-env.json
+local-env.json
+xs-security-local.json
+
+# ==========================================
+# Optional: SAP CAP generated files
+# Uncomment if your project uses CAP
+# ==========================================
+# gen/
+# srv/external/
