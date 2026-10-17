@@ -78,3 +78,9 @@ xs-security-local.json
 # ==========================================
 # gen/
 # srv/external/
+
+# ==========================================
+# SAP BTP / MTA Build Artifacts
+# ==========================================
+mta_archives/
+*.mtar
